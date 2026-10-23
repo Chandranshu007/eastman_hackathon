@@ -43,7 +43,7 @@ export default function Header() {
           </label>
           <nav className="main-nav" aria-label="Main navigation">
             <NavLink to="/" end>Home</NavLink>
-            <NavLink to="/#categories">Categories</NavLink>
+            <NavLink to="/categories">Categories</NavLink>
             <NavLink className="cart-nav" to="/cart">
               <ShoppingBag size={19} aria-hidden="true" />
               <span>Cart</span>

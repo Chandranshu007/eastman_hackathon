@@ -14,6 +14,8 @@ Open the local URL printed by Vite (usually `http://localhost:5173`). Run `npm r
 ## Features
 
 - Product catalog with live search and category filters.
+- Dedicated Categories page with category browsing and filtered product collections.
+- Home page with featured products and category shortcuts.
 - Product detail pages at `/product/:productId`.
 - Shared cart with stock-limited quantities and `localStorage` persistence.
 - Responsive layouts, empty states, and a checkout integration placeholder.

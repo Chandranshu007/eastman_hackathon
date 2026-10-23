@@ -1,27 +1,28 @@
 import { ArrowRight, SearchX, ShieldCheck, Truck } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import CategoryFilter from "../components/CategoryFilter";
+import { useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { products } from "../data/products";
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState("All Products");
   const [searchParams] = useSearchParams();
   const search = (searchParams.get("q") || "").trim().toLowerCase();
 
-  const filteredProducts = useMemo(
-    () => products.filter((product) => {
-      const categoryMatches =
-        selectedCategory === "All Products" || product.category === selectedCategory;
-      const searchMatches =
-        !search ||
-        product.name.toLowerCase().includes(search) ||
-        product.category.toLowerCase().includes(search);
-      return categoryMatches && searchMatches;
-    }),
-    [selectedCategory, search],
+  const matchingProducts = useMemo(
+    () => products.filter((product) =>
+      product.name.toLowerCase().includes(search) ||
+      product.category.toLowerCase().includes(search),
+    ),
+    [search],
   );
+
+  const featuredProducts = useMemo(
+    () => [...products]
+      .sort((first, second) => second.rating - first.rating)
+      .slice(0, 4),
+    [],
+  );
+  const visibleProducts = search ? matchingProducts : featuredProducts;
 
   return (
     <main>
@@ -30,8 +31,8 @@ export default function Home() {
           <span className="eyebrow"><span className="eyebrow-dot" /> MADE FOR EVERYDAY</span>
           <h1>Find your next <span>favorite.</span></h1>
           <p>Explore quality products at great prices. The little upgrades that make every day better.</p>
-          <a className="button button-primary hero-button" href="#products">
-            Shop now <ArrowRight size={17} aria-hidden="true" />
+          <a className="button button-primary hero-button" href="#featured">
+            {search ? "View results" : "Explore favorites"} <ArrowRight size={17} aria-hidden="true" />
           </a>
           <div className="hero-perks">
             <span><Truck size={17} aria-hidden="true" /> Easy delivery</span>
@@ -54,30 +55,34 @@ export default function Home() {
         <span>Easy, secure shopping</span>
       </section>
 
-      <section className="catalog-section content-width" id="products">
+      <section className="catalog-section content-width" id="featured">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">THE EASTMAN EDIT</span>
-            <h2>Something for every day</h2>
-            <p>Useful, well-loved picks for your home, commute, and beyond.</p>
+            <span className="eyebrow">{search ? "SEARCH RESULTS" : "THE EASTMAN EDIT"}</span>
+            <h2>{search ? `Results for “${searchParams.get("q")}”` : "Popular right now"}</h2>
+            <p>{search ? "Products matching your search." : "Customer-loved picks to make everyday a little better."}</p>
           </div>
-          <span className="result-count">{filteredProducts.length} products</span>
+          <span className="result-count">{visibleProducts.length} {visibleProducts.length === 1 ? "product" : "products"}</span>
         </div>
-        <div className="catalog-toolbar" id="categories">
-          <CategoryFilter selected={selectedCategory} onSelect={setSelectedCategory} />
-        </div>
-        {filteredProducts.length > 0 ? (
-          <div className="product-grid">
-            {filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
-          </div>
+        {visibleProducts.length > 0 ? (
+          <>
+            <div className="product-grid">
+              {visibleProducts.map((product) => <ProductCard key={product.id} product={product} />)}
+            </div>
+            {!search && (
+              <div className="home-catalog-link">
+                <Link className="button button-outline" to="/categories">
+                  Browse all products <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              </div>
+            )}
+          </>
         ) : (
           <div className="empty-results">
             <SearchX size={34} strokeWidth={1.5} aria-hidden="true" />
             <h3>No products found</h3>
-            <p>Try a different search or choose another category.</p>
-            <button className="button button-outline" type="button" onClick={() => setSelectedCategory("All Products")}>
-              Show all products
-            </button>
+            <p>Try another product name or category in the search box.</p>
+            <Link className="button button-outline" to="/">Clear search</Link>
           </div>
         )}
       </section>

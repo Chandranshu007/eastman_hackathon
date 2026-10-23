@@ -1,6 +1,8 @@
-const categories = ["All Products", "Electronics", "Fashion", "Home & Living", "Accessories"];
-
-export default function CategoryFilter({ selected, onSelect }) {
+export default function CategoryFilter({
+  selected,
+  onSelect,
+  categories = ["All Products", "Electronics", "Fashion", "Home & Living", "Accessories"],
+}) {
   return (
     <div className="category-list" aria-label="Filter by category">
       {categories.map((category) => (
