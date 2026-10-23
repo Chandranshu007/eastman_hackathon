@@ -12,6 +12,10 @@ VALUES
 ('Water Bottle', 'Home', 399.00, 40),
 ('Laptop Backpack', 'Accessories', 1299.00, 14);
 
+
+
+
+
 INSERT INTO coupons
     (code, discount_type, discount_value, min_order_amount, max_discount)
 VALUES
